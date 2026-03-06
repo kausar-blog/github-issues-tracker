@@ -8,8 +8,10 @@ const modal = document.getElementById("issue_modal");
 
 // active button kora lagbe.. tai amake DRY kora jabe na.. ekta idea ache.. all button ke ekta array te niye kaj kora.. taile khub ease...
 
+// all button array te niyechi
 const buttons = [btnAll, btnOpen, btnClosed];
 
+// active button
 const setActiveButton = (activeBtn) => {
   buttons.forEach((btn) => {
     if (btn === activeBtn) {
@@ -21,10 +23,42 @@ const setActiveButton = (activeBtn) => {
     }
   });
 };
+function updateTotalCard() {
+  const visibleCards = document.querySelectorAll("#issues-card-list .card");
+  let count = 0;
+  visibleCards.forEach((card) => {
+    if (card.style.display !== "none") count++;
+  });
+  totalCard.innerHTML = count;
+}
 
-btnAll.addEventListener("click", () => setActiveButton(btnAll));
-btnOpen.addEventListener("click", () => setActiveButton(btnOpen));
-btnClosed.addEventListener("click", () => setActiveButton(btnClosed));
+// filter cards kora lagbe ekhn ....
+const filterCards = (status) => {
+  const cards = document.querySelectorAll("#issues-card-list .card");
+  cards.forEach((card) => {
+    if (status === "all") {
+      card.style.display = "block";
+    } else {
+      card.style.display = card.dataset.status === status ? "block" : "none";
+    }
+  });
+
+  updateTotalCard();
+};
+
+// all button addEventListener diye call korsi
+btnAll.addEventListener("click", () => {
+  setActiveButton(btnAll);
+  filterCards("all");
+});
+btnOpen.addEventListener("click", () => {
+  setActiveButton(btnOpen);
+  filterCards("open");
+});
+btnClosed.addEventListener("click", () => {
+  setActiveButton(btnClosed);
+  filterCards("closed");
+});
 
 const fetchIssues = async () => {
   // api ke fetch diye json korlam..
@@ -46,6 +80,7 @@ const renderIssues = (items) => {
     // console.log(item);
     // console.log(item.labels);
     const card = document.createElement("div");
+    card.dataset.status = item.status;
 
     card.className =
       "card bg-white border border-slate-200 rounded-xl cursor-pointer shadow-sm transition-transform duration-150 hover:scale-105 hover:shadow-lg";
@@ -100,6 +135,14 @@ const renderIssues = (items) => {
     `;
 
     issuesCard.append(card);
+
+    // console.log(item.status);
+    if (item.status === "open") {
+      console.log("k");
+    }
+    if (item.status === "open") {
+      console.log("blog");
+    }
   });
 };
 
