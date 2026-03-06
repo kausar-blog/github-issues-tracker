@@ -1,5 +1,30 @@
+const btnAll = document.getElementById("btn-all");
+const btnOpen = document.getElementById("btn-open");
+const btnClosed = document.getElementById("btn-closed");
+
 const issuesCard = document.getElementById("issues-card-list");
+const totalCard = document.getElementById("total-card");
 const modal = document.getElementById("issue_modal");
+
+// active button kora lagbe.. tai amake DRY kora jabe na.. ekta idea ache.. all button ke ekta array te niye kaj kora.. taile khub ease...
+
+const buttons = [btnAll, btnOpen, btnClosed];
+
+const setActiveButton = (activeBtn) => {
+  buttons.forEach((btn) => {
+    if (btn === activeBtn) {
+      btn.classList.add("btn-primary", "text-white");
+      btn.classList.remove("bg-white", "border-slate-200", "text-slate-500");
+    } else {
+      btn.classList.remove("btn-primary", "text-white");
+      btn.classList.add("bg-white", "border-slate-200", "text-slate-500");
+    }
+  });
+};
+
+btnAll.addEventListener("click", () => setActiveButton(btnAll));
+btnOpen.addEventListener("click", () => setActiveButton(btnOpen));
+btnClosed.addEventListener("click", () => setActiveButton(btnClosed));
 
 const fetchIssues = async () => {
   // api ke fetch diye json korlam..
@@ -13,17 +38,19 @@ const fetchIssues = async () => {
 
 const renderIssues = (items) => {
   // console.log(items);
-
   issuesCard.innerHTML = "";
+  // totalCard e items er length dilam
+  totalCard.innerHTML = items.length;
 
   items.forEach((item) => {
-    console.log(item);
+    // console.log(item);
     // console.log(item.labels);
     const card = document.createElement("div");
 
     card.className =
       "card bg-white border border-slate-200 rounded-xl cursor-pointer shadow-sm transition-transform duration-150 hover:scale-105 hover:shadow-lg";
 
+    // card.innerHTML e onk somoy lagbe... if else color change etc te... but alhamdulillah
     card.innerHTML = `
       <div class="h-1  rounded-t-xl ${item.status === "open" ? "bg-emerald-400" : "bg-purple-600"}"></div>
 

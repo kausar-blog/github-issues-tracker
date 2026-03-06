@@ -67,13 +67,17 @@
       <!-- Filter Buttons -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-4">
         <div class="join gap-2 flex-wrap">
-          <button class="btn join-item btn-primary btn-sm px-6">All</button>
+          <button id="btn-all" class="btn join-item btn-primary btn-sm px-6">
+            All
+          </button>
           <button
+            id="btn-open"
             class="btn join-item btn-sm bg-white border-slate-200 text-slate-500 px-6"
           >
             Open
           </button>
           <button
+            id="btn-closed"
             class="btn join-item btn-sm bg-white border-slate-200 text-slate-500 px-6"
           >
             Closed
@@ -94,7 +98,10 @@
               </div>
             </div>
             <div>
-              <h2 class="text-xl font-bold text-slate-800">50 Issues</h2>
+              <h2 class="text-xl font-medium text-slate-800"
+                ><strong id="total-card" class="font-bold">500</strong>
+                Issues</h2
+              >
               <p class="text-sm text-slate-400">
                 Track and manage your project issues
               </p>
