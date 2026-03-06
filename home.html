@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
@@ -111,7 +111,10 @@
         </div>
 
         <!-- card list -->
-        <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div
+          id="issues-card-list"
+          class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+        >
           <!-- card 1 -->
           <div
             class="card bg-white border border-slate-200 hover:shadow-md transition-shadow rounded-xl cursor-pointer"
@@ -411,5 +414,8 @@
         <button>close</button>
       </form>
     </dialog>
+
+    <!-- js link -->
+    <script src="./js/home.js"></script>
   </body>
 </html>
