@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
   <head>
     <meta charset="UTF-8" />
@@ -34,8 +34,94 @@
     <link rel="stylesheet" href="./css/style.css" />
   </head>
   <body>
-    <h1 class="text-4xl">GitHub Issues Tracker Projects</h1>
+    <!-- login section -->
+    <header
+      class="min-h-screen bg-slate-50 flex items-center justify-center p-4"
+    >
+      <nav
+        class="card w-full max-w-md bg-white shadow-xl border border-gray-100 p-8"
+      >
+        <!-- top details -->
+        <div class="flex flex-col items-center mb-8">
+          <div class="w-20 h-20 mb-4">
+            <img
+              src="./assets/github-logo.png"
+              alt="github-logo"
+              class="w-full h-auto object-cover"
+            />
+          </div>
+          <h1 class="text-3xl font-bold text-slate-800">
+            GitHub Issues Tracker
+          </h1>
+          <p class="text-slate-500 text-md mt-1">
+            Sign in to manage your issues
+          </p>
+        </div>
 
+        <!-- input form -->
+        <form id="login-form" class="space-y-4">
+          <div class="form-control">
+            <label class="label pb-1">
+              <span class="label-text font-semibold text-slate-700"
+                >Username</span
+              >
+            </label>
+            <input
+              id="username"
+              type="text"
+              placeholder="Enter Username"
+              class="input input-bordered w-full focus:outline-primary"
+            />
+            <label class="label py-1">
+              <span class="label-text-alt text-indigo-600 font-bold"
+                >Default: admin</span
+              >
+            </label>
+          </div>
+
+          <div class="form-control">
+            <label class="label pb-1">
+              <span class="label-text font-semibold text-slate-700"
+                >Password</span
+              >
+            </label>
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter Password"
+              class="input input-bordered w-full focus:outline-primary"
+            />
+            <label class="label py-1">
+              <span class="label-text-alt text-indigo-600 font-bold"
+                >Default: admin123</span
+              >
+            </label>
+          </div>
+
+          <button
+            class="btn btn-primary w-full mt-4 normal-case text-lg shadow-lg"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <!-- divider -->
+        <div class="divider text-slate-400 text-md my-8">OR</div>
+
+        <!-- demo Credentials -->
+        <div class="text-center">
+          <p class="text-xs text-slate-400 mb-2">Demo Credentials:</p>
+          <div class="bg-slate-50 rounded-lg p-4 border border-slate-100">
+            <p class="text-md font-bold text-slate-700">
+              Username: <span class="font-normal">admin</span>
+            </p>
+            <p class="text-md font-bold text-slate-700">
+              Password: <span class="font-normal">admin123</span>
+            </p>
+          </div>
+        </div>
+      </nav>
+    </header>
     <!-- js link -->
     <script src="./js/script.js"></script>
   </body>
