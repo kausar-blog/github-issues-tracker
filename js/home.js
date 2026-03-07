@@ -16,7 +16,7 @@ const modal = document.getElementById("issue_modal");
 btnNewIssue.addEventListener("click", () => {
   const input = searchInput.value.trim().toLowerCase();
 
-  fetchIssuesBySearch;
+  fetchIssuesBySearch(input);
 });
 
 // all button array te niyechi
@@ -107,6 +107,7 @@ const renderIssues = (items) => {
     card.className =
       "card bg-white border border-slate-200 rounded-xl cursor-pointer shadow-sm transition-transform duration-150 hover:scale-105 hover:shadow-lg";
 
+    console.log(item.status);
     // card.innerHTML e onk somoy lagbe... if else color change etc te... but alhamdulillah
     card.innerHTML = `
       <div class="h-1  rounded-t-xl ${item.status === "open" ? "bg-emerald-400" : "bg-purple-600"}"></div>
@@ -289,7 +290,7 @@ const renderIssueModal = (details) => {
         <!-- close button -->
         <div class="modal-action mt-8">
           <form method="dialog">
-            <button class="btn px-12 md:px-16 normal-case       text-lg shadow-lg ${details.status === "open" ? "btn-success" : "btn-warning"}" >
+            <button class="btn px-12 md:px-16 normal-case text-lg shadow-lg ${details.status === "open" ? "btn-success" : "btn-warning"}" >
               Close
             </button>
           </form>
@@ -307,9 +308,9 @@ const renderIssueModal = (details) => {
 };
 
 const fetchIssuesBySearch = async (title) => {
-  console.log(title);
+  // console.log(title);
 
-  /* const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${title}`;
+  const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${title}`;
 
   try {
     const res = await fetch(url);
@@ -320,15 +321,16 @@ const fetchIssuesBySearch = async (title) => {
 
     const data = await res.json();
     // console.log(data.data);
-    renderIssuesByNew(data.data);
+
+    renderIssues(data.data);
   } catch (error) {
     console.error("Failed to fetch issues:", error);
-  } */
+  }
 };
 
-const renderIssuesByNew = (e) => {
+/* const renderIssuesByNew = (e) => {
   return e;
-};
+}; */
 
 fetchIssues();
 
@@ -344,3 +346,9 @@ status: "open";
 title: "Fix navigation menu on mobile devices";
 updatedAt: "2024-01-15T10:30:00Z";
  */
+
+searchInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") {
+    btnNewIssue.click();
+  }
+});
