@@ -67,6 +67,11 @@ const fetchIssues = async () => {
 
   try {
     const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error("Could not fetch resource ok!");
+    }
+
     const data = await res.json();
     // console.log(data.data);
     renderIssues(data.data);
@@ -94,12 +99,12 @@ const renderIssues = (items) => {
     card.innerHTML = `
       <div class="h-1  rounded-t-xl ${item.status === "open" ? "bg-emerald-400" : "bg-purple-600"}"></div>
 
-      <div class="p-4 space-y-3">
+      <div class="p-4 space-y-3" onclick="fetchIssueDetails(${item.id})">
         <div class="flex justify-between items-start">
           <img
             src="${item.status === "open" ? "./assets/open-status.png" : "./assets/closed-status.png"}"
             alt="${item.status}-status"
-            onclick="fetchIssueDetails(${item.id})"
+            
             class="w-6 h-6"
           />
           <span class="badge  border-none font-bold py-2 px-3 text-sm ${item.priority === "high" ? "bg-red-50 text-red-500" : item.priority === "medium" ? "bg-yellow-50 text-yellow-500" : "bg-gray-50 text-gray-500"} ">
@@ -157,6 +162,11 @@ const fetchIssueDetails = async (issueId) => {
 `;
   try {
     const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error("Could not fetch resource ok!");
+    }
+
     const data = await res.json();
     // console.log(data.data);
     renderIssueModal(data.data);
@@ -166,23 +176,24 @@ const fetchIssueDetails = async (issueId) => {
 };
 
 const renderIssueModal = (details) => {
-  // console.log(details);
+  // console.log(details.title);
+
   modal.innerHTML = `
-    <div
-        class="modal-box max-w-3xl p-8 md:p-10 bg-white rounded-3xl shadow-2xl"
-      >
+    <div class="modal-box p-0 md:p-0 max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+
+      <div class="h-1.5   ${details.status === "open" ? "bg-emerald-400" : "bg-purple-600"}"></div>
+
+      <div class="p-8 md:p-10">
+
         <!-- modal header  close button -->
         <div class="flex justify-between items-start mb-6">
           <h3
-            class="text-2xl md:text-3xl font-bold text-green-700 tracking-tight"
+            class="text-2xl md:text-3xl font-bold  tracking-tight ${details.status === "open" ? "text-emerald-400" : "text-purple-600"}""
             id="modalTitle"
           >
-            issues tracker details
+            Issues Tracker Details
           </h3>
-          <button
-            class="btn btn-sm btn-circle btn-ghost hover:bg-gray-200 transition-colors duration-200"
-            onclick="document.getElementById('issue_modal').close()"
-          >
+          <button class="btn btn-sm btn-circle btn-ghost transition-colors duration-200 ${details.status === "open" ? "text-emerald-600 hover:bg-emerald-100" : "text-purple-600 hover:bg-purple-100"}"  onclick="document.getElementById('issue_modal').close()"> 
             ✕
           </button>
         </div>
@@ -199,39 +210,43 @@ const renderIssueModal = (details) => {
             class="flex flex-wrap items-center gap-3 text-slate-500 font-medium text-sm md:text-base"
           >
             <span
-              class="badge badge-success gap-2 px-4 py-2 text-white border-none"
+              class="badge gap-2 px-4 py-2  text-white border-none ${details.status === "open" ? "bg-emerald-700" : "bg-purple-700"}"
             >
-              Opened
+             ${details.status === "open" ? "opened" : details.status}
             </span>
             <span
               >• Opened by
               <span class="text-slate-700 font-semibold"
-                >Md Kausar Ali</span
+                >${details.assignee.toUpperCase()}</span
               ></span
             >
-            <span>• 22/02/2026</span>
+            <span>• ${details.createdAt.split("T")[0]}</span>
           </div>
         </div>
 
         <!-- issue tags -->
         <div class="flex flex-wrap gap-3 mt-6">
-          <div
-            class="flex items-center gap-1 px-3 py-1 bg-red-50 text-red-500 border border-red-100 rounded-md text-xs font-bold"
-          >
-            <span>🐞</span> BUG
-          </div>
-          <div
-            class="flex items-center gap-1 px-3 py-1 bg-orange-50 text-orange-500 border border-orange-100 rounded-md text-xs font-bold"
-          >
-            <span>⚙️</span> HELP WANTED
-          </div>
+          ${details.labels
+            .map(
+              (label) => `
+              <span class="badge badge-outline  font-bold ${
+                label === "bug"
+                  ? "bg-red-50 text-red-500 border-red-400"
+                  : label === "help wanted"
+                    ? "bg-orange-50 text-yellow-500 border-yellow-400"
+                    : "bg-purple-100 text-purple-600 border-purple-400"
+              }">
+                ${label === "bug" ? "🐞 BUG" : label === "help wanted" ? "⚙️ HELP WANTED" : label}
+              </span>
+            `,
+            )
+            .join("")}
         </div>
 
         <!-- description -->
         <div class="mt-8">
           <p class="text-slate-500 text-base md:text-lg leading-relaxed">
-            The navigation menu doesn't collapse properly on mobile devices.
-            Need to fix the responsive behavior.
+            ${details.description}
           </p>
         </div>
 
@@ -242,17 +257,16 @@ const renderIssueModal = (details) => {
           <div class="space-y-1">
             <p class="text-slate-400 text-sm font-medium">Assignee:</p>
             <p class="text-slate-800 text-lg md:text-xl font-bold">
-              Md Kausar Ali
+             ${details.assignee.toUpperCase()}
             </p>
           </div>
 
           <div class="space-y-1 text-left md:text-right">
             <p class="text-slate-400 text-sm font-medium">Priority:</p>
-            <span
-              class="badge bg-red-500 border-none text-white font-bold px-6 py-3 md:py-4 text-sm md:text-base"
-            >
-              HIGH
-            </span>
+            
+            <span class="badge  border-none font-bold py-3 px-6 md:py-4 text-sm md:text-base ${details.priority === "high" ? "bg-red-50 text-red-500" : details.priority === "medium" ? "bg-yellow-50 text-yellow-500" : "bg-gray-300 text-gray-700"} ">
+            ${details.priority.toUpperCase()}
+          </span>
           </div>
           <div></div>
         </div>
@@ -260,14 +274,14 @@ const renderIssueModal = (details) => {
         <!-- close button -->
         <div class="modal-action mt-8">
           <form method="dialog">
-            <button
-              class="btn btn-primary px-12 md:px-16 normal-case text-lg shadow-lg"
-            >
+            <button class="btn px-12 md:px-16 normal-case       text-lg shadow-lg ${details.status === "open" ? "btn-success" : "btn-warning"}" >
               Close
             </button>
           </form>
         </div>
+         
       </div>
+    </div>
 
       <!-- modal-backdrop -->
       <form method="dialog" class="modal-backdrop">
