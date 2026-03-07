@@ -3,10 +3,21 @@ const btnOpen = document.getElementById("btn-open");
 const btnClosed = document.getElementById("btn-closed");
 
 const issuesCard = document.getElementById("issues-card-list");
+const btnNewIssue = document.getElementById("btnNewIssue");
+const searchInput = document.getElementById("searchInput");
+let allIssues = [];
+
+const issuesOpenClosed = document.getElementById("issues-open-closed");
 const totalCard = document.getElementById("total-card");
 const modal = document.getElementById("issue_modal");
 
 // active button kora lagbe.. tai amake DRY kora jabe na.. ekta idea ache.. all button ke ekta array te niye kaj kora.. taile khub ease...
+
+btnNewIssue.addEventListener("click", () => {
+  const input = searchInput.value.trim().toLowerCase();
+
+  fetchIssuesBySearch;
+});
 
 // all button array te niyechi
 const buttons = [btnAll, btnOpen, btnClosed];
@@ -68,12 +79,11 @@ const fetchIssues = async () => {
   try {
     const res = await fetch(url);
 
-    if (!res.ok) {
-      throw new Error("Could not fetch resource ok!");
-    }
+    if (!res.ok) throw new Error("Could not fetch resource ok!");
 
     const data = await res.json();
     // console.log(data.data);
+    // allIssues = data.data;
     renderIssues(data.data);
   } catch (error) {
     console.error("Failed to fetch issues:", error);
@@ -84,13 +94,15 @@ const renderIssues = (items) => {
   // console.log(items);
   issuesCard.innerHTML = "";
   // totalCard e items er length dilam
-  totalCard.innerHTML = items.length;
+  // totalCard.innerHTML = items.length;
 
   items.forEach((item) => {
     // console.log(item);
     // console.log(item.labels);
     const card = document.createElement("div");
     card.dataset.status = item.status;
+
+    // fetchIssuesBySearch(item.title);
 
     card.className =
       "card bg-white border border-slate-200 rounded-xl cursor-pointer shadow-sm transition-transform duration-150 hover:scale-105 hover:shadow-lg";
@@ -102,7 +114,7 @@ const renderIssues = (items) => {
       <div class="p-4 space-y-3" onclick="fetchIssueDetails(${item.id})">
         <div class="flex justify-between items-start">
           <img
-            src="${item.status === "open" ? "./assets/open-status.png" : "./assets/closed-status.png"}"
+            src="${item.status === "open" ? "./assets/Open-Status.png" : "./assets/closed-status.png"}"
             alt="${item.status}-status"
             
             class="w-6 h-6"
@@ -134,7 +146,7 @@ const renderIssues = (items) => {
 
         <div class=" border-t pt-2 mt-2  text-slate-400 space-y-1">
           <div class="flex justify-between flex-wrap gap-1">
-            <p>#1 by ${item.author}</p>
+            <p>#${item.id} by ${item.author}</p>
             <p>${item.createdAt.split("T")[0]}</p>
           </div>
           <div class="flex justify-between flex-wrap gap-1">
@@ -155,11 +167,14 @@ const renderIssues = (items) => {
       // console.log("blog");
     }
   });
+
+  updateTotalCard();
 };
 
 const fetchIssueDetails = async (issueId) => {
   const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}
 `;
+
   try {
     const res = await fetch(url);
 
@@ -289,6 +304,30 @@ const renderIssueModal = (details) => {
       </form>
   `;
   modal.showModal();
+};
+
+const fetchIssuesBySearch = async (title) => {
+  console.log(title);
+
+  /* const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${title}`;
+
+  try {
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error("Could not fetch resource ok!");
+    }
+
+    const data = await res.json();
+    // console.log(data.data);
+    renderIssuesByNew(data.data);
+  } catch (error) {
+    console.error("Failed to fetch issues:", error);
+  } */
+};
+
+const renderIssuesByNew = (e) => {
+  return e;
 };
 
 fetchIssues();
