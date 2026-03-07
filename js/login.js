@@ -23,8 +23,8 @@ loginButtonEl.addEventListener("click", (e) => {
   // login korbe jodi ei sotto true hoi tahole..otherwise else return korbe..
   if (username === "admin" && password === "admin123") {
     console.log("kausar");
-    // window.location.assign('../home.html');
-    window.location.href = "../home.html";
+    // window.location.assign('../home.html') ;
+    window.location.assign = "/github-issues-tracker/home.html";
   } else {
     alert("Invalid username or password. Try again.");
 
