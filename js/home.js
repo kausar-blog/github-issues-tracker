@@ -7,6 +7,8 @@ const btnNewIssue = document.getElementById("btnNewIssue");
 const searchInput = document.getElementById("searchInput");
 let allIssues = [];
 
+let currentStatus = "all";
+
 const issuesOpenClosed = document.getElementById("issues-open-closed");
 const totalCard = document.getElementById("total-card");
 const modal = document.getElementById("issue_modal");
@@ -15,6 +17,12 @@ const modal = document.getElementById("issue_modal");
 
 btnNewIssue.addEventListener("click", () => {
   const input = searchInput.value.trim().toLowerCase();
+
+  if (!input) {
+    alert("Please enter search text");
+    fetchIssues();
+    return;
+  }
 
   fetchIssuesBySearch(input);
 });
@@ -61,14 +69,17 @@ const filterCards = (status) => {
 // all button addEventListener diye call korsi
 btnAll.addEventListener("click", () => {
   setActiveButton(btnAll);
+  currentStatus = "all";
   filterCards("all");
 });
 btnOpen.addEventListener("click", () => {
   setActiveButton(btnOpen);
+  currentStatus = "open";
   filterCards("open");
 });
 btnClosed.addEventListener("click", () => {
   setActiveButton(btnClosed);
+  currentStatus = "closed";
   filterCards("closed");
 });
 
@@ -323,6 +334,7 @@ const fetchIssuesBySearch = async (title) => {
     // console.log(data.data);
 
     renderIssues(data.data);
+    filterCards(currentStatus);
   } catch (error) {
     console.error("Failed to fetch issues:", error);
   }
@@ -331,8 +343,6 @@ const fetchIssuesBySearch = async (title) => {
 /* const renderIssuesByNew = (e) => {
   return e;
 }; */
-
-fetchIssues();
 
 /* 
 assignee: "jane_smith";
@@ -352,3 +362,5 @@ searchInput.addEventListener("keypress", (e) => {
     btnNewIssue.click();
   }
 });
+
+fetchIssues();
