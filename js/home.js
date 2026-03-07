@@ -5,7 +5,6 @@ const btnClosed = document.getElementById("btn-closed");
 const issuesCard = document.getElementById("issues-card-list");
 const btnNewIssue = document.getElementById("btnNewIssue");
 const searchInput = document.getElementById("searchInput");
-let allIssues = [];
 
 let currentStatus = "all";
 
@@ -118,7 +117,7 @@ const renderIssues = (items) => {
     card.className =
       "card bg-white border border-slate-200 rounded-xl cursor-pointer shadow-sm transition-transform duration-150 hover:scale-105 hover:shadow-lg";
 
-    console.log(item.status);
+    // console.log(item.status);
     // card.innerHTML e onk somoy lagbe... if else color change etc te... but alhamdulillah
     card.innerHTML = `
       <div class="h-1  rounded-t-xl ${item.status === "open" ? "bg-emerald-400" : "bg-purple-600"}"></div>
@@ -171,13 +170,13 @@ const renderIssues = (items) => {
 
     issuesCard.append(card);
 
-    // console.log(item.status);
+    /* // console.log(item.status);
     if (item.status === "open") {
       // console.log("k");
     }
     if (item.status === "open") {
       // console.log("blog");
-    }
+    } */
   });
 
   updateTotalCard();
