@@ -23,14 +23,15 @@ const setActiveButton = (activeBtn) => {
     }
   });
 };
-function updateTotalCard() {
+
+const updateTotalCard = () => {
   const visibleCards = document.querySelectorAll("#issues-card-list .card");
   let count = 0;
   visibleCards.forEach((card) => {
     if (card.style.display !== "none") count++;
   });
   totalCard.innerHTML = count;
-}
+};
 
 // filter cards kora lagbe ekhn ....
 const filterCards = (status) => {
@@ -64,10 +65,14 @@ const fetchIssues = async () => {
   // api ke fetch diye json korlam..
   const url = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
 
-  const res = await fetch(url);
-  const data = await res.json();
-  // console.log(data.data);
-  renderIssues(data.data);
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    // console.log(data.data);
+    renderIssues(data.data);
+  } catch (error) {
+    console.error("Failed to fetch issues:", error);
+  }
 };
 
 const renderIssues = (items) => {
@@ -94,6 +99,7 @@ const renderIssues = (items) => {
           <img
             src="${item.status === "open" ? "./assets/open-status.png" : "./assets/closed-status.png"}"
             alt="${item.status}-status"
+            onclick="fetchIssueDetails(${item.id})"
             class="w-6 h-6"
           />
           <span class="badge  border-none font-bold py-2 px-3 text-sm ${item.priority === "high" ? "bg-red-50 text-red-500" : item.priority === "medium" ? "bg-yellow-50 text-yellow-500" : "bg-gray-50 text-gray-500"} ">
@@ -138,12 +144,150 @@ const renderIssues = (items) => {
 
     // console.log(item.status);
     if (item.status === "open") {
-      console.log("k");
+      // console.log("k");
     }
     if (item.status === "open") {
-      console.log("blog");
+      // console.log("blog");
     }
   });
 };
 
+const fetchIssueDetails = async (issueId) => {
+  const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}
+`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    // console.log(data.data);
+    renderIssueModal(data.data);
+  } catch (error) {
+    console.error("Failed to fetch issues:", error);
+  }
+};
+
+const renderIssueModal = (details) => {
+  // console.log(details);
+  modal.innerHTML = `
+    <div
+        class="modal-box max-w-3xl p-8 md:p-10 bg-white rounded-3xl shadow-2xl"
+      >
+        <!-- modal header  close button -->
+        <div class="flex justify-between items-start mb-6">
+          <h3
+            class="text-2xl md:text-3xl font-bold text-green-700 tracking-tight"
+            id="modalTitle"
+          >
+            issues tracker details
+          </h3>
+          <button
+            class="btn btn-sm btn-circle btn-ghost hover:bg-gray-200 transition-colors duration-200"
+            onclick="document.getElementById('issue_modal').close()"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- issue  details -->
+        <div class="space-y-3">
+          <h3
+            class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight leading-snug"
+          >
+            ${details.title}
+          </h3>
+
+          <div
+            class="flex flex-wrap items-center gap-3 text-slate-500 font-medium text-sm md:text-base"
+          >
+            <span
+              class="badge badge-success gap-2 px-4 py-2 text-white border-none"
+            >
+              Opened
+            </span>
+            <span
+              >• Opened by
+              <span class="text-slate-700 font-semibold"
+                >Md Kausar Ali</span
+              ></span
+            >
+            <span>• 22/02/2026</span>
+          </div>
+        </div>
+
+        <!-- issue tags -->
+        <div class="flex flex-wrap gap-3 mt-6">
+          <div
+            class="flex items-center gap-1 px-3 py-1 bg-red-50 text-red-500 border border-red-100 rounded-md text-xs font-bold"
+          >
+            <span>🐞</span> BUG
+          </div>
+          <div
+            class="flex items-center gap-1 px-3 py-1 bg-orange-50 text-orange-500 border border-orange-100 rounded-md text-xs font-bold"
+          >
+            <span>⚙️</span> HELP WANTED
+          </div>
+        </div>
+
+        <!-- description -->
+        <div class="mt-8">
+          <p class="text-slate-500 text-base md:text-lg leading-relaxed">
+            The navigation menu doesn't collapse properly on mobile devices.
+            Need to fix the responsive behavior.
+          </p>
+        </div>
+
+        <!-- priority details -->
+        <div
+          class="mt-10 bg-slate-50 rounded-xl p-6 flex flex-col md:flex-row justify-between items-start md:items-center border border-slate-100 gap-4 md:gap-0"
+        >
+          <div class="space-y-1">
+            <p class="text-slate-400 text-sm font-medium">Assignee:</p>
+            <p class="text-slate-800 text-lg md:text-xl font-bold">
+              Md Kausar Ali
+            </p>
+          </div>
+
+          <div class="space-y-1 text-left md:text-right">
+            <p class="text-slate-400 text-sm font-medium">Priority:</p>
+            <span
+              class="badge bg-red-500 border-none text-white font-bold px-6 py-3 md:py-4 text-sm md:text-base"
+            >
+              HIGH
+            </span>
+          </div>
+          <div></div>
+        </div>
+
+        <!-- close button -->
+        <div class="modal-action mt-8">
+          <form method="dialog">
+            <button
+              class="btn btn-primary px-12 md:px-16 normal-case text-lg shadow-lg"
+            >
+              Close
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- modal-backdrop -->
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+  `;
+  modal.showModal();
+};
+
 fetchIssues();
+
+/* 
+assignee: "jane_smith";
+author: "john_doe";
+createdAt: "2024-01-15T10:30:00Z";
+description: "The navigation menu doesn't collapse properly on mobile devices. Need to fix the responsive behavior.";
+id: 1;
+labels: (2)[("bug", "help wanted")];
+priority: "high";
+status: "open";
+title: "Fix navigation menu on mobile devices";
+updatedAt: "2024-01-15T10:30:00Z";
+ */
