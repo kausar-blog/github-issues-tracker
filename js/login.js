@@ -24,7 +24,7 @@ loginButtonEl.addEventListener("click", (e) => {
   if (username === "admin" && password === "admin123") {
     console.log("kausar");
     // window.location.assign('../home.html');
-    window.location.replace("../home.html");
+    window.location.href = "../home.html";
   } else {
     alert("Invalid username or password. Try again.");
 
