@@ -2,6 +2,7 @@ const btnAll = document.getElementById("btn-all");
 const btnOpen = document.getElementById("btn-open");
 const btnClosed = document.getElementById("btn-closed");
 
+const loaderSpinner = document.getElementById("loader-spinner");
 const issuesCard = document.getElementById("issues-card-list");
 const btnNewIssue = document.getElementById("btnNewIssue");
 const searchInput = document.getElementById("searchInput");
@@ -13,18 +14,6 @@ const totalCard = document.getElementById("total-card");
 const modal = document.getElementById("issue_modal");
 
 // active button kora lagbe.. tai amake DRY kora jabe na.. ekta idea ache.. all button ke ekta array te niye kaj kora.. taile khub ease...
-
-btnNewIssue.addEventListener("click", () => {
-  const input = searchInput.value.trim().toLowerCase();
-
-  if (!input) {
-    alert("Please enter search text");
-    fetchIssues();
-    return;
-  }
-
-  fetchIssuesBySearch(input);
-});
 
 // all button array te niyechi
 const buttons = [btnAll, btnOpen, btnClosed];
@@ -83,6 +72,9 @@ btnClosed.addEventListener("click", () => {
 });
 
 const fetchIssues = async () => {
+  loaderSpinner.classList.remove("hidden");
+  issuesCard.innerHTML = "";
+
   // api ke fetch diye json korlam..
   const url = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
 
@@ -97,7 +89,9 @@ const fetchIssues = async () => {
     renderIssues(data.data);
   } catch (error) {
     console.error("Failed to fetch issues:", error);
+    issuesCard.innerHTML = `<p class="col-span-full text-center text-gray-500 py-10">Failed to load issues</p>`;
   }
+  loaderSpinner.classList.add("hidden");
 };
 
 const renderIssues = (items) => {
@@ -112,6 +106,10 @@ const renderIssues = (items) => {
     const card = document.createElement("div");
     card.dataset.status = item.status;
 
+    /* ${item.labels.map((e)=>{
+      console.log(e);
+    })} */
+    // kausar.push(item.labels[1]);
     // fetchIssuesBySearch(item.title);
 
     card.className =
@@ -122,7 +120,7 @@ const renderIssues = (items) => {
     card.innerHTML = `
       <div class="h-1  rounded-t-xl ${item.status === "open" ? "bg-emerald-400" : "bg-purple-600"}"></div>
 
-      <div class="p-4 space-y-3" onclick="fetchIssueDetails(${item.id})">
+      <div class=" p-4 space-y-3" onclick="fetchIssueDetails(${item.id})">
         <div class="flex justify-between items-start">
           <img
             src="${item.status === "open" ? "./assets/Open-Status.png" : "./assets/closed-status.png"}"
@@ -179,6 +177,7 @@ const renderIssues = (items) => {
     } */
   });
 
+  filterCards(currentStatus);
   updateTotalCard();
 };
 
@@ -198,6 +197,7 @@ const fetchIssueDetails = async (issueId) => {
     renderIssueModal(data.data);
   } catch (error) {
     console.error("Failed to fetch issues:", error);
+    modal.innerHTML = `<p class="text-center text-gray-500 py-10">Failed to load details</p>`;
   }
 };
 
@@ -319,6 +319,8 @@ const renderIssueModal = (details) => {
 
 const fetchIssuesBySearch = async (title) => {
   // console.log(title);
+  loaderSpinner.classList.remove("hidden");
+  issuesCard.innerHTML = "";
 
   const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${title}`;
 
@@ -333,15 +335,13 @@ const fetchIssuesBySearch = async (title) => {
     // console.log(data.data);
 
     renderIssues(data.data);
-    filterCards(currentStatus);
+    // filterCards(currentStatus);
   } catch (error) {
     console.error("Failed to fetch issues:", error);
+    issuesCard.innerHTML = `<p class="col-span-full text-center text-gray-500 py-10">No results found</p>`;
   }
+  loaderSpinner.classList.add("hidden");
 };
-
-/* const renderIssuesByNew = (e) => {
-  return e;
-}; */
 
 /* 
 assignee: "jane_smith";
@@ -360,6 +360,18 @@ searchInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     btnNewIssue.click();
   }
+});
+
+btnNewIssue.addEventListener("click", () => {
+  const input = searchInput.value.trim().toLowerCase();
+
+  if (!input) {
+    alert("Please enter search text");
+    fetchIssues();
+    return;
+  }
+
+  fetchIssuesBySearch(input);
 });
 
 fetchIssues();
