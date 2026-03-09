@@ -269,7 +269,7 @@ const renderIssueModal = (details) => {
                 >${details.assignee.toUpperCase()}</span
               ></span
             >
-            <span>• ${formatDate(item.createdAt)}</span>
+            <span>• ${formatDate(details.createdAt)}</span>
           </div>
         </div>
 
