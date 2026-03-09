@@ -18,7 +18,7 @@ const modal = document.getElementById("issue_modal");
 // all button array te niyechi
 const buttons = [btnAll, btnOpen, btnClosed];
 
-// active button
+// active button function
 const setActiveButton = (activeBtn) => {
   buttons.forEach((btn) => {
     if (btn === activeBtn) {
@@ -31,19 +31,32 @@ const setActiveButton = (activeBtn) => {
   });
 };
 
+// spinner
+const showLoader = () => loaderSpinner.classList.remove("hidden");
+const hideLoader = () => loaderSpinner.classList.add("hidden");
+
+// date years convert
+const formatDate = (date) => {
+  return new Date(date).toLocaleDateString();
+};
+
+// total card count
 const updateTotalCard = () => {
   const visibleCards = document.querySelectorAll("#issues-card-list .card");
   let count = 0;
   visibleCards.forEach((card) => {
     if (card.style.display !== "none") count++;
   });
-  totalCard.innerHTML = count;
+  totalCard.innerText = count;
 };
 
-// filter cards kora lagbe ekhn ....
+// filter cards ..
 const filterCards = (status) => {
   const cards = document.querySelectorAll("#issues-card-list .card");
+
   cards.forEach((card) => {
+    // card.style.display='block'
+
     if (status === "all") {
       card.style.display = "block";
     } else {
@@ -54,7 +67,7 @@ const filterCards = (status) => {
   updateTotalCard();
 };
 
-// all button addEventListener diye call korsi
+// all button addEventListener diye call korsi filter korsi
 btnAll.addEventListener("click", () => {
   setActiveButton(btnAll);
   currentStatus = "all";
@@ -71,14 +84,15 @@ btnClosed.addEventListener("click", () => {
   filterCards("closed");
 });
 
+// fetch issues for all
 const fetchIssues = async () => {
-  loaderSpinner.classList.remove("hidden");
-  issuesCard.innerHTML = "";
-
   // api ke fetch diye json korlam..
   const url = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
 
   try {
+    showLoader();
+    issuesCard.innerHTML = "";
+
     const res = await fetch(url);
 
     if (!res.ok) throw new Error("Could not fetch resource ok!");
@@ -88,12 +102,13 @@ const fetchIssues = async () => {
     // allIssues = data.data;
     renderIssues(data.data);
   } catch (error) {
-    console.error("Failed to fetch issues:", error);
+    // console.error("Failed to fetch issues:", error);
     issuesCard.innerHTML = `<p class="col-span-full text-center text-gray-500 py-10">Failed to load issues</p>`;
   }
-  loaderSpinner.classList.add("hidden");
+  hideLoader();
 };
 
+// render issues
 const renderIssues = (items) => {
   // console.log(items);
   issuesCard.innerHTML = "";
@@ -109,8 +124,8 @@ const renderIssues = (items) => {
     /* ${item.labels.map((e)=>{
       console.log(e);
     })} */
-    // kausar.push(item.labels[1]);
-    // fetchIssuesBySearch(item.title);
+
+    // console.log(item);
 
     card.className =
       "card bg-white border border-slate-200 rounded-xl cursor-pointer shadow-sm transition-transform duration-150 hover:scale-105 hover:shadow-lg";
@@ -120,7 +135,7 @@ const renderIssues = (items) => {
     card.innerHTML = `
       <div class="h-1  rounded-t-xl ${item.status === "open" ? "bg-emerald-400" : "bg-purple-600"}"></div>
 
-      <div class=" p-4 space-y-3" onclick="fetchIssueDetails(${item.id})">
+      <div class="p-4 space-y-3">
         <div class="flex justify-between items-start">
           <img
             src="${item.status === "open" ? "./assets/Open-Status.png" : "./assets/closed-status.png"}"
@@ -156,15 +171,19 @@ const renderIssues = (items) => {
         <div class=" border-t pt-2 mt-2  text-slate-400 space-y-1">
           <div class="flex justify-between flex-wrap gap-1">
             <p>#${item.id} by ${item.author}</p>
-            <p>${item.createdAt.split("T")[0]}</p>
+            <p>${formatDate(item.createdAt)}</p>
           </div>
           <div class="flex justify-between flex-wrap gap-1">
             <p>Assignee ${item.assignee}</p>
-            <p>UpdatedAt: ${item.updatedAt.split("T")[0]}</p>
+            <p>UpdatedAt: ${formatDate(item.updatedAt)}</p>
           </div>
         </div>
       </div>
     `;
+
+    card.addEventListener("click", () => {
+      fetchIssueDetails(item.id);
+    });
 
     issuesCard.append(card);
 
@@ -178,12 +197,15 @@ const renderIssues = (items) => {
   });
 
   filterCards(currentStatus);
-  updateTotalCard();
+  // updateTotalCard();
 };
 
+// fetch issues details
 const fetchIssueDetails = async (issueId) => {
   const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}
 `;
+
+  // const urls = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}`;
 
   try {
     const res = await fetch(url);
@@ -201,6 +223,7 @@ const fetchIssueDetails = async (issueId) => {
   }
 };
 
+// render modal
 const renderIssueModal = (details) => {
   // console.log(details.title);
 
@@ -246,7 +269,7 @@ const renderIssueModal = (details) => {
                 >${details.assignee.toUpperCase()}</span
               ></span
             >
-            <span>• ${details.createdAt.split("T")[0]}</span>
+            <span>• ${formatDate(item.createdAt)}</span>
           </div>
         </div>
 
@@ -317,14 +340,17 @@ const renderIssueModal = (details) => {
   modal.showModal();
 };
 
+// fetch issues search api
 const fetchIssuesBySearch = async (title) => {
   // console.log(title);
-  loaderSpinner.classList.remove("hidden");
-  issuesCard.innerHTML = "";
+  // loaderSpinner.classList.remove("hidden");
+  // issuesCard.innerHTML = "";
 
   const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${title}`;
 
   try {
+    showLoader();
+
     const res = await fetch(url);
 
     if (!res.ok) {
@@ -340,7 +366,7 @@ const fetchIssuesBySearch = async (title) => {
     console.error("Failed to fetch issues:", error);
     issuesCard.innerHTML = `<p class="col-span-full text-center text-gray-500 py-10">No results found</p>`;
   }
-  loaderSpinner.classList.add("hidden");
+  hideLoader();
 };
 
 /* 
@@ -356,6 +382,7 @@ title: "Fix navigation menu on mobile devices";
 updatedAt: "2024-01-15T10:30:00Z";
  */
 
+// search events for keyboard enter click
 searchInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     btnNewIssue.click();
@@ -364,6 +391,9 @@ searchInput.addEventListener("keypress", (e) => {
 
 btnNewIssue.addEventListener("click", () => {
   const input = searchInput.value.trim().toLowerCase();
+
+  setActiveButton(btnAll);
+  currentStatus = "all";
 
   if (!input) {
     alert("Please enter search text");

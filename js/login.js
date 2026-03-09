@@ -1,9 +1,9 @@
 const loginButtonEl = document.getElementById("login-button");
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
 
-loginButtonEl.addEventListener("click", (e) => {
+const login = () => {
   // console.log(loginButtonEl);
-  const usernameInput = document.getElementById("username");
-  const passwordInput = document.getElementById("password");
 
   const username = usernameInput.value.trim();
   const password = passwordInput.value.trim();
@@ -22,20 +22,23 @@ loginButtonEl.addEventListener("click", (e) => {
 
   // login korbe jodi ei sotto true hoi tahole..otherwise else return korbe..
   if (username === "admin" && password === "admin123") {
-    console.log("kausar");
+    // console.log("kausar");
     // window.location.assign('../home.html') ;
     window.location.assign("home.html");
+    // window.location.href = "home.html";
     // window.location.assign("/github-issues-tracker/home.html");
   } else {
     alert("Invalid username or password. Try again.");
 
     passwordInput.focus();
   }
-});
+};
+
+loginButtonEl.addEventListener("click", login);
 
 // Enter press korleo login hobe
 document.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
-    loginButtonEl.click();
+    login();
   }
 });
