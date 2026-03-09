@@ -30,6 +30,13 @@
     />
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- font awesome cdn link -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+    />
     <!-- css link -->
     <link rel="stylesheet" href="./css/style.css" />
   </head>
@@ -66,6 +73,7 @@
                 >Username</span
               >
             </label>
+            <!-- value="admin" -->
             <input
               value="admin"
               id="username"
@@ -86,13 +94,20 @@
                 >Password</span
               >
             </label>
-            <input
-              value="admin123"
-              id="password"
-              type="password"
-              placeholder="Enter Password"
-              class="input input-bordered w-full focus:outline-primary"
-            />
+            <!-- value="admin123" -->
+            <div class="relative">
+              <input
+                id="password"
+                type="password"
+                placeholder="Enter Password"
+                class="input input-bordered w-full pr-10 focus:outline-primary"
+              />
+
+              <i
+                id="togglePassword"
+                class="fa-solid fa-eye absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500"
+              ></i>
+            </div>
             <label class="label py-1">
               <span class="label-text-alt text-indigo-600 font-bold"
                 >Default: admin123</span

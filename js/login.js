@@ -1,6 +1,18 @@
 const loginButtonEl = document.getElementById("login-button");
 const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+
+// password hid and show
+togglePassword.addEventListener("click", () => {
+  if (passwordInput.type === "password") {
+    passwordInput.type = "text";
+    togglePassword.classList.replace("fa-eye", "fa-eye-slash");
+  } else {
+    passwordInput.type = "password";
+    togglePassword.classList.replace("fa-eye-slash", "fa-eye");
+  }
+});
 
 const login = () => {
   // console.log(loginButtonEl);

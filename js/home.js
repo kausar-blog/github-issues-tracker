@@ -84,6 +84,57 @@ btnClosed.addEventListener("click", () => {
   filterCards("closed");
 });
 
+// label style for object
+const labelStyles = {
+  bug: {
+    style: "bg-red-50 text-red-600 border-red-400",
+    icon: "fa-solid fa-bug",
+    text: "BUG",
+  },
+
+  "help wanted": {
+    style: "bg-yellow-50 text-yellow-600 border-yellow-400",
+    icon: "fa-solid fa-earth-americas",
+    text: "HELP WANTED",
+  },
+
+  enhancement: {
+    style: "bg-blue-50 text-blue-600 border-blue-400",
+    icon: "fa-solid fa-wand-magic-sparkles",
+    text: "ENHANCEMENT",
+  },
+
+  "good first issue": {
+    style: "bg-green-50 text-green-600 border-green-400",
+    icon: "fa-solid fa-seedling",
+    text: "GOOD FIRST ISSUE",
+  },
+
+  documentation: {
+    style: "bg-purple-50 text-purple-600 border-purple-400",
+    icon: "fa-solid fa-book",
+    text: "DOCUMENTATION",
+  },
+
+  default: {
+    style: "bg-gray-100 text-gray-700 border-gray-400",
+    icon: "fa-solid fa-tag",
+  },
+};
+
+// label function
+const labelsGenerates = (labels, size = "normal") => {
+  return labels
+    .map((label) => {
+      const infoLabel = labelStyles[label] || labelStyles.default;
+      return `<span class=" badge badge-outline font-bold flex items-center gap-1 ${size === "small" ? "text-[10px]" : ""}${infoLabel.style}">
+      <i class="${infoLabel.icon}"></i>
+      ${infoLabel.text || label}
+    </span>`;
+    })
+    .join("");
+};
+
 // fetch issues for all
 const fetchIssues = async () => {
   // api ke fetch diye json korlam..
@@ -132,6 +183,17 @@ const renderIssues = (items) => {
 
     // console.log(item.status);
     // card.innerHTML e onk somoy lagbe... if else color change etc te... but alhamdulillah
+
+    /* item.labels
+      .map(
+        (label) => `
+          <span class="badge badge-outline  text-[10px] font-bold  ${label === "bug" ? "bg-red-50 text-red-500 border-red-400" : label === "help wanted" ? "bg-orange-50 text-yellow-500 border-yellow-400" : "bg-purple-100 text-purple-600 border-purple-400"}">
+             ${label === "bug" ? "🐞 BUG" : label === "help wanted" ? "⚙️ HELP WANTED" : label}
+          </span>
+        `,
+      )
+      .join(""); */
+
     card.innerHTML = `
       <div class="h-1  rounded-t-xl ${item.status === "open" ? "bg-emerald-400" : "bg-purple-600"}"></div>
 
@@ -156,16 +218,7 @@ const renderIssues = (items) => {
         </p>
 
         <div class="flex gap-2 flex-wrap">
-          ${item.labels
-            .map(
-              (label) => `
-          <span class="badge badge-outline  text-[10px] font-bold  ${label === "bug" ? "bg-red-50 text-red-500 border-red-400" : label === "help wanted" ? "bg-orange-50 text-yellow-500 border-yellow-400" : "bg-purple-100 text-purple-600 border-purple-400"}">
-             ${label === "bug" ? "🐞 BUG" : label === "help wanted" ? "⚙️ HELP WANTED" : label}
-          </span>
-        `,
-            )
-            .join("")}
-
+          ${labelsGenerates(item.labels, "small")}
         </div>
 
         <div class=" border-t pt-2 mt-2  text-slate-400 space-y-1">
@@ -227,6 +280,22 @@ const fetchIssueDetails = async (issueId) => {
 const renderIssueModal = (details) => {
   // console.log(details.title);
 
+  /* details.labels
+    .map(
+      (label) => `
+              <span class="badge badge-outline  font-bold ${
+                label === "bug"
+                  ? "bg-red-50 text-red-500 border-red-400"
+                  : label === "help wanted"
+                    ? "bg-orange-50 text-yellow-500 border-yellow-400"
+                    : "bg-purple-100 text-purple-600 border-purple-400"
+              }">
+                ${label === "bug" ? "🐞 BUG" : label === "help wanted" ? "⚙️ HELP WANTED" : label}
+              </span>
+            `,
+    )
+    .join("") */
+
   modal.innerHTML = `
     <div class="modal-box p-0 md:p-0 max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden">
 
@@ -275,21 +344,7 @@ const renderIssueModal = (details) => {
 
         <!-- issue tags -->
         <div class="flex flex-wrap gap-3 mt-6">
-          ${details.labels
-            .map(
-              (label) => `
-              <span class="badge badge-outline  font-bold ${
-                label === "bug"
-                  ? "bg-red-50 text-red-500 border-red-400"
-                  : label === "help wanted"
-                    ? "bg-orange-50 text-yellow-500 border-yellow-400"
-                    : "bg-purple-100 text-purple-600 border-purple-400"
-              }">
-                ${label === "bug" ? "🐞 BUG" : label === "help wanted" ? "⚙️ HELP WANTED" : label}
-              </span>
-            `,
-            )
-            .join("")}
+            ${labelsGenerates(details.labels)}
         </div>
 
         <!-- description -->
@@ -323,7 +378,7 @@ const renderIssueModal = (details) => {
         <!-- close button -->
         <div class="modal-action mt-8">
           <form method="dialog">
-            <button class="btn px-12 md:px-16 normal-case text-lg shadow-lg ${details.status === "open" ? "btn-success" : "btn-warning"}" >
+            <button class="btn px-12 md:px-16 normal-case text-lg shadow-lg ${details.status === "open" ? "bg-green-500 hover:bg-green-600" : "bg-purple-500 hover:bg-purple-600"}" >
               Close
             </button>
           </form>
