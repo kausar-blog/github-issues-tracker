@@ -153,7 +153,7 @@ const fetchIssues = async () => {
     // allIssues = data.data;
     renderIssues(data.data);
   } catch (error) {
-    // console.error("Failed to fetch issues:", error);
+    console.error("Failed to fetch issues:", error);
     issuesCard.innerHTML = `<p class="col-span-full text-center text-gray-500 py-10">Failed to load issues</p>`;
   }
   hideLoader();
@@ -170,29 +170,16 @@ const renderIssues = (items) => {
     // console.log(item);
     // console.log(item.labels);
     const card = document.createElement("div");
+
+    // filter er jnro dataset diye .. all  card niye gesi...
     card.dataset.status = item.status;
-
-    /* ${item.labels.map((e)=>{
-      console.log(e);
-    })} */
-
-    // console.log(item);
 
     card.className =
       "card bg-white border border-slate-200 rounded-xl cursor-pointer shadow-sm transition-transform duration-150 hover:scale-105 hover:shadow-lg";
 
     // console.log(item.status);
-    // card.innerHTML e onk somoy lagbe... if else color change etc te... but alhamdulillah
 
-    /* item.labels
-      .map(
-        (label) => `
-          <span class="badge badge-outline  text-[10px] font-bold  ${label === "bug" ? "bg-red-50 text-red-500 border-red-400" : label === "help wanted" ? "bg-orange-50 text-yellow-500 border-yellow-400" : "bg-purple-100 text-purple-600 border-purple-400"}">
-             ${label === "bug" ? "🐞 BUG" : label === "help wanted" ? "⚙️ HELP WANTED" : label}
-          </span>
-        `,
-      )
-      .join(""); */
+    // card.innerHTML e onk somoy lagbe... if else color change etc te... tai ternary operator used korsi.. onk jaigai
 
     card.innerHTML = `
       <div class="h-1  rounded-t-xl ${item.status === "open" ? "bg-emerald-400" : "bg-purple-600"}"></div>
@@ -239,14 +226,6 @@ const renderIssues = (items) => {
     });
 
     issuesCard.append(card);
-
-    /* // console.log(item.status);
-    if (item.status === "open") {
-      // console.log("k");
-    }
-    if (item.status === "open") {
-      // console.log("blog");
-    } */
   });
 
   filterCards(currentStatus);
@@ -257,8 +236,6 @@ const renderIssues = (items) => {
 const fetchIssueDetails = async (issueId) => {
   const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}
 `;
-
-  // const urls = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}`;
 
   try {
     const res = await fetch(url);
@@ -279,22 +256,6 @@ const fetchIssueDetails = async (issueId) => {
 // render modal
 const renderIssueModal = (details) => {
   // console.log(details.title);
-
-  /* details.labels
-    .map(
-      (label) => `
-              <span class="badge badge-outline  font-bold ${
-                label === "bug"
-                  ? "bg-red-50 text-red-500 border-red-400"
-                  : label === "help wanted"
-                    ? "bg-orange-50 text-yellow-500 border-yellow-400"
-                    : "bg-purple-100 text-purple-600 border-purple-400"
-              }">
-                ${label === "bug" ? "🐞 BUG" : label === "help wanted" ? "⚙️ HELP WANTED" : label}
-              </span>
-            `,
-    )
-    .join("") */
 
   modal.innerHTML = `
     <div class="modal-box p-0 md:p-0 max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden">
@@ -398,7 +359,6 @@ const renderIssueModal = (details) => {
 // fetch issues search api
 const fetchIssuesBySearch = async (title) => {
   // console.log(title);
-  // loaderSpinner.classList.remove("hidden");
   // issuesCard.innerHTML = "";
 
   const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${title}`;
@@ -423,19 +383,6 @@ const fetchIssuesBySearch = async (title) => {
   }
   hideLoader();
 };
-
-/* 
-assignee: "jane_smith";
-author: "john_doe";
-createdAt: "2024-01-15T10:30:00Z";
-description: "The navigation menu doesn't collapse properly on mobile devices. Need to fix the responsive behavior.";
-id: 1;
-labels: (2)[("bug", "help wanted")];
-priority: "high";
-status: "open";
-title: "Fix navigation menu on mobile devices";
-updatedAt: "2024-01-15T10:30:00Z";
- */
 
 // search events for keyboard enter click
 searchInput.addEventListener("keypress", (e) => {
