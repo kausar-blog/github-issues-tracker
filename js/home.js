@@ -7,18 +7,18 @@ const issuesCard = document.getElementById("issues-card-list");
 const btnNewIssue = document.getElementById("btnNewIssue");
 const searchInput = document.getElementById("searchInput");
 
-let currentStatus = "all";
+let currentStatus = "all"; // Tracks currently selected filter
 
 const issuesOpenClosed = document.getElementById("issues-open-closed");
 const totalCard = document.getElementById("total-card");
 const modal = document.getElementById("issue_modal");
 
-// active button kora lagbe.. tai amake DRY kora jabe na.. ekta idea ache.. all button ke ekta array te niye kaj kora.. taile khub ease...
+// Active button functionality is working. The code isn't DRY yet, but I realized I can put all buttons in an array and handle them collectively, making it much easier.
 
-// all button array te niyechi
+// All buttons are stored in an array.
 const buttons = [btnAll, btnOpen, btnClosed];
 
-// active button function
+// Function to visually highlight the active filter button
 const setActiveButton = (activeBtn) => {
   buttons.forEach((btn) => {
     if (btn === activeBtn) {
@@ -31,16 +31,16 @@ const setActiveButton = (activeBtn) => {
   });
 };
 
-// spinner
+// Show and hide loading spinner
 const showLoader = () => loaderSpinner.classList.remove("hidden");
 const hideLoader = () => loaderSpinner.classList.add("hidden");
 
-// date years convert
+// Format a date to local string
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString();
 };
 
-// total card count
+// Count visible cards and update totalCard element
 const updateTotalCard = () => {
   const visibleCards = document.querySelectorAll("#issues-card-list .card");
   let count = 0;
@@ -50,7 +50,7 @@ const updateTotalCard = () => {
   totalCard.innerText = count;
 };
 
-// filter cards ..
+// Filter cards based on their status (all, open, closed)
 const filterCards = (status) => {
   const cards = document.querySelectorAll("#issues-card-list .card");
 
@@ -67,7 +67,7 @@ const filterCards = (status) => {
   updateTotalCard();
 };
 
-// all button addEventListener diye call korsi filter korsi
+// Add click event listeners to buttons to filter cards by status
 btnAll.addEventListener("click", () => {
   setActiveButton(btnAll);
   currentStatus = "all";
@@ -84,7 +84,7 @@ btnClosed.addEventListener("click", () => {
   filterCards("closed");
 });
 
-// label style for object
+// Styles, icons, and text for different issue labels
 const labelStyles = {
   bug: {
     style: "bg-red-50 text-red-600 border-red-400",
@@ -122,7 +122,7 @@ const labelStyles = {
   },
 };
 
-// label function
+// Generate HTML for labels using labelStyles object; supports normal or small size
 const labelsGenerates = (labels, size = "normal") => {
   return labels
     .map((label) => {
@@ -135,14 +135,14 @@ const labelsGenerates = (labels, size = "normal") => {
     .join("");
 };
 
-// fetch issues for all
+// Fetch all issues from the API and render them
 const fetchIssues = async () => {
   // api ke fetch diye json korlam..
   const url = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
 
   try {
-    showLoader();
-    issuesCard.innerHTML = "";
+    showLoader(); // show loading indicator
+    issuesCard.innerHTML = ""; // Clear previous issues
 
     const res = await fetch(url);
 
@@ -151,27 +151,29 @@ const fetchIssues = async () => {
     const data = await res.json();
     // console.log(data.data);
     // allIssues = data.data;
+
+    // Render fetched issues
     renderIssues(data.data);
   } catch (error) {
     console.error("Failed to fetch issues:", error);
     issuesCard.innerHTML = `<p class="col-span-full text-center text-gray-500 py-10">Failed to load issues</p>`;
   }
-  hideLoader();
+  hideLoader(); // Hide loading indicator
 };
 
-// render issues
+// Render a list of issue cards
+// Each card displays status, priority, title, description, labels, author, assignee, and dates
+// Adds click listener to fetch and show issue details
 const renderIssues = (items) => {
   // console.log(items);
-  issuesCard.innerHTML = "";
-  // totalCard e items er length dilam
-  // totalCard.innerHTML = items.length;
+  issuesCard.innerHTML = ""; // Clear existing cards
 
   items.forEach((item) => {
     // console.log(item);
     // console.log(item.labels);
     const card = document.createElement("div");
 
-    // filter er jnro dataset diye .. all  card niye gesi...
+    // Store status for filtering
     card.dataset.status = item.status;
 
     card.className =
@@ -179,7 +181,7 @@ const renderIssues = (items) => {
 
     // console.log(item.status);
 
-    // card.innerHTML e onk somoy lagbe... if else color change etc te... tai ternary operator used korsi.. onk jaigai
+    // In my project, card.innerHTML is used frequently. For conditional color changes, I often use the ternary operator instead of if-else.
 
     card.innerHTML = `
       <div class="h-1  rounded-t-xl ${item.status === "open" ? "bg-emerald-400" : "bg-purple-600"}"></div>
@@ -221,6 +223,7 @@ const renderIssues = (items) => {
       </div>
     `;
 
+    // Fetch and display issue details on card click
     card.addEventListener("click", () => {
       fetchIssueDetails(item.id);
     });
@@ -228,11 +231,13 @@ const renderIssues = (items) => {
     issuesCard.append(card);
   });
 
+  // Apply current filter after rendering
   filterCards(currentStatus);
+
   // updateTotalCard();
 };
 
-// fetch issues details
+// Fetch detailed data for a specific issue by its ID and render it in a modal
 const fetchIssueDetails = async (issueId) => {
   const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}
 `;
@@ -246,6 +251,8 @@ const fetchIssueDetails = async (issueId) => {
 
     const data = await res.json();
     // console.log(data.data);
+
+    // Render issue details in the modal
     renderIssueModal(data.data);
   } catch (error) {
     console.error("Failed to fetch issues:", error);
@@ -253,7 +260,10 @@ const fetchIssueDetails = async (issueId) => {
   }
 };
 
-// render modal
+// Render a modal with detailed information about a specific issue
+// Includes title, status, assignee, created date, labels, description, and priority
+// Dynamically styles elements based on issue status and priority
+// Provides close buttons for both modal header and backdrop
 const renderIssueModal = (details) => {
   // console.log(details.title);
 
@@ -356,15 +366,16 @@ const renderIssueModal = (details) => {
   modal.showModal();
 };
 
-// fetch issues search api
+// Fetch issues from the API based on a search query (title) and render the results
+// Shows a loader while fetching and handles errors gracefully
+
 const fetchIssuesBySearch = async (title) => {
   // console.log(title);
-  // issuesCard.innerHTML = "";
 
   const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${title}`;
 
   try {
-    showLoader();
+    showLoader(); // Show loading indicator
 
     const res = await fetch(url);
 
@@ -375,35 +386,41 @@ const fetchIssuesBySearch = async (title) => {
     const data = await res.json();
     // console.log(data.data);
 
+    // Render search results
     renderIssues(data.data);
     // filterCards(currentStatus);
   } catch (error) {
     console.error("Failed to fetch issues:", error);
     issuesCard.innerHTML = `<p class="col-span-full text-center text-gray-500 py-10">No results found</p>`;
   }
-  hideLoader();
+  hideLoader(); // Hide loading indicator
 };
 
-// search events for keyboard enter click
+// Trigger search when Enter key is pressed in the search input
 searchInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
-    btnNewIssue.click();
+    btnNewIssue.click(); // Simulate click on search button
   }
 });
 
+// Handle search button click
 btnNewIssue.addEventListener("click", () => {
   const input = searchInput.value.trim().toLowerCase();
 
-  setActiveButton(btnAll);
+  setActiveButton(btnAll); // Reset filter to 'all'
   currentStatus = "all";
 
   if (!input) {
-    alert("Please enter search text");
-    fetchIssues();
+    alert("Please enter search text"); // Alert if input is empty
+    fetchIssues(); // Fetch all issues if no input
     return;
   }
 
+  // Fetch issues based on search query
   fetchIssuesBySearch(input);
 });
 
+// Initial fetch of all issues on page load
 fetchIssues();
+
+// alert(`Login successful! Welcome back. `);

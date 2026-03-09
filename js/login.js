@@ -3,13 +3,13 @@ const usernameInput = document.getElementById("username");
 const passwordInput = document.getElementById("password");
 const togglePassword = document.getElementById("togglePassword");
 
-// password hid and show
+// Toggle password visibility when eye icon is clicked
 togglePassword.addEventListener("click", () => {
   if (passwordInput.type === "password") {
-    passwordInput.type = "text";
+    passwordInput.type = "text"; // Show password
     togglePassword.classList.replace("fa-eye", "fa-eye-slash");
   } else {
-    passwordInput.type = "password";
+    passwordInput.type = "password"; // Hide password
     togglePassword.classList.replace("fa-eye-slash", "fa-eye");
   }
 });
@@ -20,7 +20,7 @@ const login = () => {
   const username = usernameInput.value.trim();
   const password = passwordInput.value.trim();
 
-  // first empty check korte hbe ..
+  // Validate empty fields
   if (!username) {
     alert("Please enter your username");
     usernameInput.focus();
@@ -32,13 +32,12 @@ const login = () => {
     return;
   }
 
-  // login korbe jodi ei sotto true hoi tahole..otherwise else return korbe..
+  // Check credentials (hardcoded for demo)
   if (username === "admin" && password === "admin123") {
     // window.location.assign('../home.html') ;
-    window.location.assign("home.html");
+    window.location.assign("home.html"); // Redirect to home page on successful login
     // window.location.href = "home.html";
     // window.location.assign("/github-issues-tracker/home.html");
-    alert(`Login successful! Welcome back. ${username}`);
   } else {
     alert("Invalid username or password. Try again.");
 
@@ -46,9 +45,10 @@ const login = () => {
   }
 };
 
+// Trigger login on login button click
 loginButtonEl.addEventListener("click", login);
 
-// Enter press korleo login hobe
+// Trigger login when Enter key is pressed anywhere on the page
 document.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     login();
